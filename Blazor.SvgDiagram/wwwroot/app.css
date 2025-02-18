@@ -49,3 +49,10 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.diagram-editor-wrapper {
+    display: flex;
+    margin: 0;
+    width: 100%;
+    height: calc(100vh - 110px);
+}

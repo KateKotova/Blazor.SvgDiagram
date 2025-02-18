@@ -1,12 +1,12 @@
 :root {
-    --diagram-container-border-color: #3c3220;
-    --diagram-container-background-color: #ab9f8a;
-    --diagram-border-color: #5c5240;
-    --diagram-background-color: #d7d5d1;
-    --diagram-grid-color: #5c5240;
+    --svg-diagram-container-border-color: #3c3220;
+    --svg-diagram-container-background-color: #ab9f8a;
+    --svg-diagram-border-color: #5c5240;
+    --svg-diagram-background-color: #d7d5d1;
+    --svg-diagram-grid-color: #5c5240;
 }
 
-.diagram-container-wrapper {
+.svg-diagram-container-wrapper {
     display: flex;
     margin: 0;
     padding: 20px;
@@ -14,18 +14,18 @@
     height: calc(100vh - 110px);
 }
 
-.diagram-container {
+.svg-diagram-container {
     display: flex;
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    border: 2px solid var(--diagram-container-border-color);
-    background-color: var(--diagram-container-background-color);
+    border: 2px solid var(--svg-diagram-container-border-color);
+    background-color: var(--svg-diagram-container-background-color);
 }
 
-.diagram {
+.svg-diagram {
     margin: auto;
-    border: 2px solid var(--diagram-border-color);
-    background-color: var(--diagram-background-color);
+    border: 2px solid var(--svg-diagram-border-color);
+    background-color: var(--svg-diagram-background-color);
 }

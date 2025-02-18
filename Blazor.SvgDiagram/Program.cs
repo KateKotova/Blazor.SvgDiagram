@@ -1,10 +1,16 @@
+using Blazor.SvgDiagram;
 using Blazor.SvgDiagram.Components;
+using BlazorComponentBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<ComponentBus>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 

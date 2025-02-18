@@ -1,0 +1,40 @@
+:root {
+    --validation-message-color: #2980B9;
+}
+
+.diagram-panel-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 20px;
+    width: 300px;
+    height: calc(100vh - 110px);
+}
+
+.diagram-panel-parameter-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 20px 0 0 0;
+}
+
+.diagram-panel-parameter-label-and-value-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.diagram-panel-parameter-lalel {
+    display: flex;
+    margin: auto 0;
+    width: 150px;
+}
+
+.diagram-panel-parameter-text-input {
+    display: flex;
+    margin: auto 0;
+    width: 100%;
+}
+
+.validation-message {
+    color: var(--validation-message-color);
+}

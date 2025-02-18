@@ -2,5 +2,9 @@
 @rendermode InteractiveServer
 
 @using Blazor.SvgDiagram.Components.SvgDiagram
+@using Blazor.SvgDiagram.Components.DiagramPanel
 
-<SvgDiagram DiagramSvgId="diagram"></SvgDiagram>
+<div class="diagram-editor-wrapper">
+    <DiagramPanel />
+    <SvgDiagram DiagramSvgId="svg-diagram"></SvgDiagram>
+</div>

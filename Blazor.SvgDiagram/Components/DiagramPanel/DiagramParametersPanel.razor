@@ -1,0 +1,13 @@
+﻿<EditForm EditContext="_editContext">
+    <DataAnnotationsValidator />
+    <DiagramPanelParameterInput Label="Ширина"
+                                InputHtmlType="number"
+                                Value="@_parametersViewModel.Width"
+                                OnValueChanged="@OnWidthChanged"
+                                ValudationMessgeFor="@(() => _parametersViewModel.Width)" />
+    <DiagramPanelParameterInput Label="Высота"
+                                InputHtmlType="number"
+                                Value="@_parametersViewModel.Height"
+                                OnValueChanged="@OnHeightChanged"
+                                ValudationMessgeFor="@(() => _parametersViewModel.Height)" />
+</EditForm>
