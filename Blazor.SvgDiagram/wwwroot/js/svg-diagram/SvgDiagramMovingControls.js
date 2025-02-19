@@ -16,16 +16,16 @@
 
         this.selectionControls.svgNode.addEventListener(
             SvgDiagramSelectionControls.selectedElementsWillBeChangedEventName,
-            (event) => SvgDiagramMovingControls.onSelectedElementsWillBeChanged(event, controls,
+            (event) => SvgDiagramMovingControls.onSelectedElementsWillBeChanged(controls,
                 event.detail.selectedElements));
 
         this.selectionControls.svgNode.addEventListener(
             SvgDiagramSelectionControls.selectedElementsChangedEventName,
-            (event) => SvgDiagramMovingControls.onSelectedElementsChanged(event, controls,
+            (event) => SvgDiagramMovingControls.onSelectedElementsChanged(controls,
                 event.detail.selectedElements));
     }
 
-    static onSelectedElementsWillBeChanged(event, controls, selectedElements) {
+    static onSelectedElementsWillBeChanged(controls, selectedElements) {
         if (!selectedElements.length) {
             return;
         }
@@ -47,7 +47,7 @@
         }
     }
 
-    static onSelectedElementsChanged(event, controls, selectedElements) {
+    static onSelectedElementsChanged(controls, selectedElements) {
         if (!selectedElements.length) {
             return;
         }
@@ -56,30 +56,27 @@
             let selectedElement = selectedElements[elementIndex];
 
             selectedElement.on(SvgDiagramMovingControls.mouseMoveEventName,
-                (event) => SvgDiagramMovingControls.onSelectedElementPointerMove
-                    (event, controls, selectedElement));
+                (event) => SvgDiagramMovingControls.onSelectedElementPointerMove(event, controls));
 
             selectedElement.on(SvgDiagramMovingControls.mouseDownEventName,
-                (event) => SvgDiagramMovingControls.onSelectedElementPointerDown
-                    (event, controls, selectedElement));
+                (event) => SvgDiagramMovingControls.onSelectedElementPointerDown(event, controls));
 
             selectedElement.on(SvgDiagramMovingControls.mouseUpEventName,
-                (event) => SvgDiagramMovingControls.onSelectedElementPointerUp
-                    (event, controls, selectedElement));
+                (event) => SvgDiagramMovingControls.onSelectedElementPointerUp(controls));
         }
     }
 
-    static onSelectedElementPointerDown(event, controls, selectedElement) {
+    static onSelectedElementPointerDown(event, controls) {
         controls.mouseX = event.clientX;
         controls.mouseY = event.clientY;
     }
 
-    static onSelectedElementPointerUp(event, controls, selectedElement) {
+    static onSelectedElementPointerUp(controls) {
         controls.mouseX = null;
         controls.mouseY = null;
     }
 
-    static onSelectedElementPointerMove(event, controls, selectedElement) {
+    static onSelectedElementPointerMove(event, controls) {
         if (controls.mouseX == null && controls.mouseY == null) {
             return;
         }

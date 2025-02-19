@@ -4,6 +4,7 @@
     static clickEventName = "click";
     static selectedElementsWillBeChangedEventName = "selectedElementsWillBeChanged";
     static selectedElementsChangedEventName = "selectedElementsChanged";
+    static selectedElementsInformationChangedEventName = "selectedElementsInformationChanged";
 
     #svg;
     #selectionFrame;
@@ -37,6 +38,54 @@
         }
 
         this.#selectionFrame.move(this.#selectionFrame.x() + xOffset, this.#selectionFrame.y() + yOffset);
+
+        this.dispatchSelectedElementsInformationChangedEvent();
+    }
+
+    getSelectedElementsInformationLines() {
+        var result = [];
+        if (!this.selectedElements.length) {
+            return result;
+        }
+
+        for (let elementIndex = 0; elementIndex < this.selectedElements.length; elementIndex++) {
+            let selectedElement = this.selectedElements[elementIndex];
+
+            var informationLine = '';
+            switch (selectedElement.type) {
+                case 'rect':
+                    informationLine = `Rectangle: x=${selectedElement.x()}, y=${selectedElement.y()}, `
+                        + `width=${selectedElement.width()}, height=${selectedElement.height()}`;
+                    break;
+                case 'circle':
+                    informationLine = `Circle : x=${selectedElement.x()}, y=${selectedElement.y()}, `
+                        + `radius=${selectedElement.radius()}`;
+                    break;
+                case 'line':
+                    var lineArray = selectedElement.array();
+                    informationLine = `Line : x1=${lineArray[0][0]}, y1=${lineArray[0][1]}, `
+                        + `x2=${lineArray[1][0]}, y2=${lineArray[1][1]}`;
+                    break;
+                default:
+                    break;
+            }
+
+            if (informationLine) {
+                result.push(informationLine);
+            }
+        }
+
+        return result;
+    }
+
+    dispatchSelectedElementsInformationChangedEvent() {
+        this.svgNode.dispatchEvent(
+            new CustomEvent(SvgDiagramSelectionControls.selectedElementsInformationChangedEventName, {
+                detail: {
+                    informationLines: this.getSelectedElementsInformationLines()
+                }
+            }),
+        );
     }
 
     dispatchSelectedElementsWillBeChangedEvent() {
@@ -169,6 +218,7 @@
 
         controls.recreateSelectionFrame();
         controls.dispatchSelectedElementsChangedEvent();
+        controls.dispatchSelectedElementsInformationChangedEvent();
     }
 
     static onSvgClick(event, controls) {
@@ -180,5 +230,6 @@
         controls.selectedElements.splice(0, controls.selectedElements.length);
         controls.recreateSelectionFrame();
         controls.dispatchSelectedElementsChangedEvent();
+        controls.dispatchSelectedElementsInformationChangedEvent();
     }
 }
