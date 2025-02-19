@@ -2,6 +2,8 @@
     static selectionFrameClassName = "svg-diagram-selection-frame";
     static selectionFrameOffset = 4;
     static clickEventName = "click";
+    static selectedElementsWillBeChangedEventName = "selectedElementsWillBeChanged";
+    static selectedElementsChangedEventName = "selectedElementsChanged";
 
     #svg;
     #selectionFrame;
@@ -16,8 +18,44 @@
             (event) => SvgDiagramSelectionControls.onSvgClick(event, controls));
     }
 
+    get svgNode() {
+        return this.#svg.node;
+    }
+
     get selectionFrameIsShown() {
         return !!this.#svg.find(`.${SvgDiagramSelectionControls.selectionFrameClassName}`).length;
+    }
+
+    moveSelectedElements(xOffset, yOffset) {
+        if (!this.selectedElements.length || (!xOffset && !yOffset)) {
+            return;
+        }
+
+        for (let elementIndex = 0; elementIndex < this.selectedElements.length; elementIndex++) {
+            let selectedElement = this.selectedElements[elementIndex];
+            selectedElement.move(selectedElement.x() + xOffset, selectedElement.y() + yOffset);
+        }
+
+        this.#selectionFrame.move(this.#selectionFrame.x() + xOffset, this.#selectionFrame.y() + yOffset);
+    }
+
+    dispatchSelectedElementsWillBeChangedEvent() {
+        this.svgNode.dispatchEvent(
+            new CustomEvent(SvgDiagramSelectionControls.selectedElementsWillBeChangedEventName, {
+                detail: {
+                    selectedElements: [...this.selectedElements]
+                }}),
+        );
+    }
+
+    dispatchSelectedElementsChangedEvent() {
+        this.svgNode.dispatchEvent(
+            new CustomEvent(SvgDiagramSelectionControls.selectedElementsChangedEventName, {
+                detail: {
+                    selectedElements: this.selectedElements
+                }
+            }),
+        );
     }
 
     recreateSelectionFrame() {
@@ -117,9 +155,11 @@
             if (elementIsSelected) {
                 return;
             }
+            controls.dispatchSelectedElementsWillBeChangedEvent();
             controls.selectedElements.splice(0, controls.selectedElements.length);
             controls.selectedElements.push(element);
         } else {
+            controls.dispatchSelectedElementsWillBeChangedEvent();
             if (elementIsSelected) {
                 controls.selectedElements.splice(selectedElementIndex, 1);
             } else {
@@ -128,6 +168,7 @@
         }
 
         controls.recreateSelectionFrame();
+        controls.dispatchSelectedElementsChangedEvent();
     }
 
     static onSvgClick(event, controls) {
@@ -135,7 +176,9 @@
             return;
         }
 
+        controls.dispatchSelectedElementsWillBeChangedEvent();
         controls.selectedElements.splice(0, controls.selectedElements.length);
         controls.recreateSelectionFrame();
+        controls.dispatchSelectedElementsChangedEvent();
     }
 }
