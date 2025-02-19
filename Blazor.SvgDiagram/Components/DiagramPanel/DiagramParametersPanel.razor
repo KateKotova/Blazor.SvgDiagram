@@ -1,11 +1,13 @@
-﻿<EditForm EditContext="_editContext">
+﻿@using Blazor.SvgDiagram.ViewModels;
+
+<EditForm EditContext="_editContext">
     <DataAnnotationsValidator />
-    <DiagramPanelParameterInput Label="Ширина"
+    <DiagramPanelParameterInput Label="@DiagramParametersViewModel.WidthCaption"
                                 InputHtmlType="number"
                                 Value="@_parametersViewModel.Width"
                                 OnValueChanged="@OnWidthChanged"
                                 ValudationMessgeFor="@(() => _parametersViewModel.Width)" />
-    <DiagramPanelParameterInput Label="Высота"
+    <DiagramPanelParameterInput Label="@DiagramParametersViewModel.HeightCaption"
                                 InputHtmlType="number"
                                 Value="@_parametersViewModel.Height"
                                 OnValueChanged="@OnHeightChanged"
@@ -13,5 +15,9 @@
     <DiagramPanelParameterCheckbox Label="Отобразить сетку"
                                    Value="@_parametersViewModel.ShowGrid"
                                    OnValueChanged="@OnShowGridChanged" />
-
+    <DiagramPanelParameterInput Label="@DiagramParametersViewModel.GridStepCaption"
+                                InputHtmlType="number"
+                                Value="@_parametersViewModel.GridStep"
+                                OnValueChanged="@OnGridStepChanged"
+                                ValudationMessgeFor="@(() => _parametersViewModel.GridStep)" />
 </EditForm>

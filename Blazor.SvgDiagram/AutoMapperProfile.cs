@@ -10,11 +10,14 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<DiagramParametersViewModel, DiagramParametersModel>()
             .ForMember(destination => destination.Width,
-                act => act.MapFrom(source => source.Width == null
-                ? DiagramParametersViewModel.MinSize : int.Parse(source.Width)))
+                option => option.MapFrom(source => source.Width == null
+                ? DiagramParametersViewModel.MinPositiveInt : int.Parse(source.Width)))
             .ForMember(destination => destination.Height,
-                act => act.MapFrom(source => source.Height == null
-                ? DiagramParametersViewModel.MinSize : int.Parse(source.Height)))
+                option => option.MapFrom(source => source.Height == null
+                ? DiagramParametersViewModel.MinPositiveInt : int.Parse(source.Height)))
+            .ForMember(destination => destination.GridStep,
+                option => option.MapFrom(source => source.GridStep == null
+                ? DiagramParametersViewModel.MinPositiveInt : int.Parse(source.GridStep)))
             .ReverseMap();
     }
 }

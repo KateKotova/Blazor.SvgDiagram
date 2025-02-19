@@ -7,4 +7,6 @@ public class DiagramParametersModel
     public int Height { get; set; } = 300;
 
     public bool ShowGrid { get; set; }
+
+    public int GridStep { get; set; } = 15;
 }

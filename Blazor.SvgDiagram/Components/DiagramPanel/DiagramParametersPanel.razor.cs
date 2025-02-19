@@ -39,29 +39,38 @@ public partial class DiagramParametersPanel
     }
 
     private void OnWidthChanged(ChangeEventArgs args) =>
-        OnSizeChanged(args, new DiagramWidthParameter(_parametersViewModel));
+        OnStringParameterChanged(args, new DiagramWidthParameter(_parametersViewModel));
 
     private void OnHeightChanged(ChangeEventArgs args) =>
-        OnSizeChanged(args, new DiagramHeightParameter(_parametersViewModel));
+        OnStringParameterChanged(args, new DiagramHeightParameter(_parametersViewModel));
 
-    private void OnSizeChanged(ChangeEventArgs args, IStringParameter sideParameter)
+    private void OnShowGridChanged(ChangeEventArgs args)
+    {
+        _parametersViewModel.ShowGrid = args.Value is not null && (bool)args.Value;
+        ChangeParameters();
+    }
+
+    private void OnGridStepChanged(ChangeEventArgs args) =>
+        OnStringParameterChanged(args, new DiagramGridStepParameter(_parametersViewModel));
+
+    private void OnStringParameterChanged(ChangeEventArgs args, IStringParameter parameter)
     {
         if (_editContext == null || _validationMessagesStore == null)
         {
             return;
         }
 
-        var fieldIdentifier = _editContext.Field(sideParameter.GetFieldName());
+        var fieldIdentifier = _editContext.Field(parameter.GetFieldName());
         _validationMessagesStore.Clear(fieldIdentifier);
 
-        sideParameter.SetValue(args.Value?.ToString());
+        parameter.SetValue(args.Value?.ToString());
         try
         {
             _editContext.Validate();
         }
         catch (OverflowException)
         {
-            _validationMessagesStore.Add(fieldIdentifier, sideParameter.GetCaption()
+            _validationMessagesStore.Add(fieldIdentifier, parameter.GetCaption()
                 + " вызывает переполнение");
             return;
         }
@@ -71,11 +80,5 @@ public partial class DiagramParametersPanel
         {
             ChangeParameters();
         }
-    }
-
-    private void OnShowGridChanged(ChangeEventArgs args)
-    {
-        _parametersViewModel.ShowGrid = args.Value is not null && (bool)args.Value;
-        ChangeParameters();
     }
 }

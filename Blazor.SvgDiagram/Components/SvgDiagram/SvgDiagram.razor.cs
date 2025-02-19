@@ -64,7 +64,10 @@ public partial class SvgDiagram : IAsyncDisposable
         }
 
         var module = await _moduleTask!.Value;
-        await module.InvokeVoidAsync("updateSvgDiagramParameters", message.Parameters.Width,
-            message.Parameters.Height, message.Parameters.ShowGrid);
+        await module.InvokeVoidAsync("updateSvgDiagramParameters", 
+            message.Parameters.Width,
+            message.Parameters.Height,
+            message.Parameters.ShowGrid,
+            message.Parameters.GridStep);
     }
 }
