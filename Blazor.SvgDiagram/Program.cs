@@ -12,6 +12,9 @@ builder.Services.AddScoped<ComponentBus>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => { options.DetailedErrors = true; });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

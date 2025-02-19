@@ -9,7 +9,7 @@ namespace Blazor.SvgDiagram.Components.SvgDiagram;
 public partial class SvgDiagram : IAsyncDisposable
 {
     [Inject]
-    public IJSRuntime JSRuntime { get; set; }
+    public IJSRuntime JsRuntime { get; set; }
 
     [Inject]
     public ComponentBus Bus { get; set; }
@@ -17,10 +17,13 @@ public partial class SvgDiagram : IAsyncDisposable
     [Parameter]
     public string DiagramSvgId { get; set; } = "diagram";
 
-    private IJSObjectReference? _jsModule;
+    private Lazy<Task<IJSObjectReference>>? _moduleTask;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+        _moduleTask = new(() => JsRuntime.InvokeAsync<IJSObjectReference>("import",
+            "./js/svg-diagram/svg-diagram.js").AsTask());
         Bus.Subscribe<DiagramParametersChangedEvent>(DiagramParametersChangedEventHandler);
     }
 
@@ -28,9 +31,6 @@ public partial class SvgDiagram : IAsyncDisposable
     {
         if (firstRender)
         {
-            _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-                "./js/svg-diagram/svg-diagram.js");
-
             await CreateDiagramAsync();
         }
     }
@@ -39,38 +39,32 @@ public partial class SvgDiagram : IAsyncDisposable
     {
         Bus.UnSubscribe<DiagramParametersChangedEvent>(DiagramParametersChangedEventHandler);
 
-        if (_jsModule is not null)
+        if (_moduleTask!.IsValueCreated)
         {
-            try
-            {
-                await _jsModule.DisposeAsync();
-            }
-            catch (JSDisconnectedException)
-            {
-                // TODO: show an error message
-            }
+            var module = await _moduleTask.Value;
+            await module.DisposeAsync();
         }
     }
 
     public async Task CreateDiagramAsync()
     {
-        if (_jsModule is not null)
-        {
-            var parameters = new DiagramParametersModel();
-            await _jsModule.InvokeVoidAsync("createSvgDiagram", DiagramSvgId,
-                parameters.Width, parameters.Height, parameters.ShowGrid);
-        }
+        var module = await _moduleTask!.Value;
+        var parameters = new DiagramParametersModel();
+        await module.InvokeVoidAsync("createSvgDiagram", DiagramSvgId,
+            parameters.Width, parameters.Height, parameters.ShowGrid);
     }
 
-    private async Task DiagramParametersChangedEventHandler(MessageArgs args, CancellationToken ct)
+    private async Task DiagramParametersChangedEventHandler(MessageArgs args,
+        CancellationToken ct)
     {
         var message = args.GetMessage<DiagramParametersChangedEvent>();
-        if (message is null || _jsModule is null)
+        if (message is null)
         {
             return;
         }
 
-        await _jsModule.InvokeVoidAsync("updateSvgDiagramParameters", message.Parameters.Width,
+        var module = await _moduleTask!.Value;
+        await module.InvokeVoidAsync("updateSvgDiagramParameters", message.Parameters.Width,
             message.Parameters.Height, message.Parameters.ShowGrid);
     }
 }
