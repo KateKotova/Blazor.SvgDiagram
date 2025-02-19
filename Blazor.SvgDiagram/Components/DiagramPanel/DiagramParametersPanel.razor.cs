@@ -26,7 +26,7 @@ public partial class DiagramParametersPanel
 
     protected override void OnParametersSet()
     {
-        base.OnInitialized();
+        base.OnParametersSet();
         _parametersViewModel = Mapper.Map<DiagramParametersViewModel>(ParametersModel);
         _editContext = new(_parametersViewModel);
         _validationMessagesStore = new(_editContext);

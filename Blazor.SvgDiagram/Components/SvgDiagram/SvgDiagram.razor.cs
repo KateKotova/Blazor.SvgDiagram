@@ -17,13 +17,12 @@ public partial class SvgDiagram : IAsyncDisposable
     [Parameter]
     public string DiagramSvgId { get; set; } = "diagram";
 
-    private Lazy<Task<IJSObjectReference>>? _moduleTask;
+    private IJSObjectReference? _module;
+    private DotNetObjectReference<SvgDiagram>? _dotNetHelper;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _moduleTask = new(() => JsRuntime.InvokeAsync<IJSObjectReference>("import",
-            "./js/svg-diagram/svg-diagram.js").AsTask());
         Bus.Subscribe<DiagramParametersChangedEvent>(DiagramParametersChangedEventHandler);
     }
 
@@ -31,6 +30,12 @@ public partial class SvgDiagram : IAsyncDisposable
     {
         if (firstRender)
         {
+            _module = await JsRuntime.InvokeAsync<IJSObjectReference>("import",
+                "./js/svg-diagram/svg-diagram.js");
+            _dotNetHelper = DotNetObjectReference.Create(this);
+            await _module.InvokeVoidAsync("DotNetHelperWrapper.setDotNetHelper",
+                _dotNetHelper);
+
             await CreateDiagramAsync();
         }
     }
@@ -39,18 +44,34 @@ public partial class SvgDiagram : IAsyncDisposable
     {
         Bus.UnSubscribe<DiagramParametersChangedEvent>(DiagramParametersChangedEventHandler);
 
-        if (_moduleTask!.IsValueCreated)
+        if (_module is not null)
         {
-            var module = await _moduleTask.Value;
-            await module.DisposeAsync();
+            try
+            {
+                await _module.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                //TODO: show error
+            }
         }
+
+        _dotNetHelper?.Dispose();
+    }
+
+    [JSInvokable]
+    public void UpdateSelectedElementsInformation(string[] informationLines)
+    {
+        Bus.Publish(new DiagramSelectedElementsInformationChangedEvent
+        {
+            InformationLines = informationLines
+        });
     }
 
     public async Task CreateDiagramAsync()
     {
-        var module = await _moduleTask!.Value;
         var parameters = new DiagramParametersModel();
-        await module.InvokeVoidAsync("createSvgDiagram", DiagramSvgId,
+        await _module!.InvokeVoidAsync("createSvgDiagram", DiagramSvgId,
             parameters.Width, parameters.Height, parameters.ShowGrid);
     }
 
@@ -63,8 +84,7 @@ public partial class SvgDiagram : IAsyncDisposable
             return;
         }
 
-        var module = await _moduleTask!.Value;
-        await module.InvokeVoidAsync("updateSvgDiagramParameters", 
+        await _module!.InvokeVoidAsync("updateSvgDiagramParameters", 
             message.Parameters.Width,
             message.Parameters.Height,
             message.Parameters.ShowGrid,

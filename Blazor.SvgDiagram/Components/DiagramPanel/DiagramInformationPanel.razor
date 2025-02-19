@@ -1,0 +1,14 @@
+﻿<div class="diagram-panel-information">
+    Используйте клавишу &lsaquo;Ctrl&rsaquo; для выделения множества объектов
+</div>
+@if (_informationLines is not null && _informationLines.Length > 0)
+{
+    <div class="diagram-panel-information">
+        @foreach (var informationLine in _informationLines)
+        {
+            <div class="diagram-panel-information-line">
+                @informationLine
+            </div>
+        }
+    </div>
+}

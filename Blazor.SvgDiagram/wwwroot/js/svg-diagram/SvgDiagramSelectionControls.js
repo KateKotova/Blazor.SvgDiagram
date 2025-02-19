@@ -54,16 +54,16 @@
             var informationLine = '';
             switch (selectedElement.type) {
                 case 'rect':
-                    informationLine = `Rectangle: x=${selectedElement.x()}, y=${selectedElement.y()}, `
-                        + `width=${selectedElement.width()}, height=${selectedElement.height()}`;
+                    informationLine = `Прямоугольник: x=${selectedElement.x()}, y=${selectedElement.y()}, `
+                        + `ширина=${selectedElement.width()}, высота=${selectedElement.height()}`;
                     break;
                 case 'circle':
-                    informationLine = `Circle : x=${selectedElement.x()}, y=${selectedElement.y()}, `
-                        + `radius=${selectedElement.radius()}`;
+                    informationLine = `Круг: x=${selectedElement.x()}, y=${selectedElement.y()}, `
+                        + `радиус=${selectedElement.radius()}`;
                     break;
                 case 'line':
                     var lineArray = selectedElement.array();
-                    informationLine = `Line : x1=${lineArray[0][0]}, y1=${lineArray[0][1]}, `
+                    informationLine = `Линия: x1=${lineArray[0][0]}, y1=${lineArray[0][1]}, `
                         + `x2=${lineArray[1][0]}, y2=${lineArray[1][1]}`;
                     break;
                 default:

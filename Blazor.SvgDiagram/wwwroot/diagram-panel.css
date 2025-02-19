@@ -9,6 +9,7 @@
     padding: 20px;
     width: 300px;
     height: calc(100vh - 110px);
+    overflow-y: auto;
 }
 
 .diagram-panel-parameter-wrapper {
@@ -47,6 +48,22 @@
     margin: auto 0;
     word-wrap: break-word;
     width: 100%;
+}
+
+.diagram-panel-information {
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    width: 100%;
+    margin: 20px 0 0 0;
+}
+
+.diagram-panel-information-line {
+    display: flex;
+    word-wrap: break-word;
+    width: 100%;
+    margin: 10px 0 0 0;
+    user-select: none;
 }
 
 .validation-message {
