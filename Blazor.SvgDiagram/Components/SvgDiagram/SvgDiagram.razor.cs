@@ -58,7 +58,7 @@ public partial class SvgDiagram : IAsyncDisposable
         {
             var parameters = new DiagramParametersModel();
             await _jsModule.InvokeVoidAsync("createSvgDiagram", DiagramSvgId,
-                parameters.Width, parameters.Height);
+                parameters.Width, parameters.Height, parameters.ShowGrid);
         }
     }
 
@@ -70,7 +70,7 @@ public partial class SvgDiagram : IAsyncDisposable
             return;
         }
 
-        await _jsModule.InvokeVoidAsync("updateSvgDiagramParameters", DiagramSvgId,
-            message.Parameters.Width, message.Parameters.Height);
+        await _jsModule.InvokeVoidAsync("updateSvgDiagramParameters", message.Parameters.Width,
+            message.Parameters.Height, message.Parameters.ShowGrid);
     }
 }

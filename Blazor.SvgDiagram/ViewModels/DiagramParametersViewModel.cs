@@ -23,4 +23,6 @@ public class DiagramParametersViewModel
     [RegularExpression("([1-9][0-9]*)", ErrorMessage = HeightCaption + SideShouldBePositiveIntMessageEnd)]
     [Range(MinSize, MaxSize, ErrorMessage = HeightCaption + SideShouldBeInRangeMessageEnd)]
     public string? Height { get; set; } = "300";
+
+    public bool ShowGrid { get; set; }
 }

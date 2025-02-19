@@ -23,15 +23,29 @@
     width: 100%;
 }
 
-.diagram-panel-parameter-lalel {
+.diagram-panel-parameter-text-input-label {
     display: flex;
     margin: auto 0;
+    word-wrap: break-word;
     width: 150px;
 }
 
 .diagram-panel-parameter-text-input {
     display: flex;
     margin: auto 0;
+    width: 100%;
+}
+
+
+.diagram-panel-parameter-checkbox-input {
+    display: flex;
+    margin: auto 10px auto 0;
+}
+
+.diagram-panel-parameter-checkbox-input-label {
+    display: flex;
+    margin: auto 0;
+    word-wrap: break-word;
     width: 100%;
 }
 

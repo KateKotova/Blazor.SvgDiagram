@@ -10,4 +10,8 @@
                                 Value="@_parametersViewModel.Height"
                                 OnValueChanged="@OnHeightChanged"
                                 ValudationMessgeFor="@(() => _parametersViewModel.Height)" />
+    <DiagramPanelParameterCheckbox Label="Отобразить сетку"
+                                   Value="@_parametersViewModel.ShowGrid"
+                                   OnValueChanged="@OnShowGridChanged" />
+
 </EditForm>

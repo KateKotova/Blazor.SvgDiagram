@@ -72,4 +72,10 @@ public partial class DiagramParametersPanel
             ChangeParameters();
         }
     }
+
+    private void OnShowGridChanged(ChangeEventArgs args)
+    {
+        _parametersViewModel.ShowGrid = args.Value is not null && (bool)args.Value;
+        ChangeParameters();
+    }
 }
