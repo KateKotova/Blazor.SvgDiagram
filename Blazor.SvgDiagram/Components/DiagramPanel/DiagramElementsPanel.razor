@@ -1,0 +1,18 @@
+﻿@using Blazor.SvgDiagram.Models
+
+<button class="diagram-panel-element-button"
+        @onclick="@(() => OnAddShape(ShapeType.Rectangle))">
+    <span>Прямоугольник</span>
+</button>
+<button class="diagram-panel-element-button"
+        @onclick="@(() => OnAddShape(ShapeType.Circle))">
+    <span>Круг</span>
+</button>
+<button class="diagram-panel-element-button"
+        @onclick="@(() => OnAddShape(ShapeType.Line))">
+    <span>Линия</span>
+</button>
+<button class="diagram-panel-element-button"
+        @onclick="@OnRemoveSelectedElements">
+    <span>Удалить выделенные</span>
+</button>

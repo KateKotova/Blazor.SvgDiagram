@@ -24,6 +24,9 @@ public partial class SvgDiagram : IAsyncDisposable
     {
         await base.OnInitializedAsync();
         Bus.Subscribe<DiagramParametersChangedEvent>(DiagramParametersChangedEventHandler);
+        Bus.Subscribe<DiagramAddShapeEvent>(DiagramAddShapeEventHandler);
+        Bus.Subscribe<DiagramRemoveSelectedElementsEvent>
+            (DiagramRemoveSelectedElementsEventHandler);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -43,6 +46,9 @@ public partial class SvgDiagram : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         Bus.UnSubscribe<DiagramParametersChangedEvent>(DiagramParametersChangedEventHandler);
+        Bus.UnSubscribe<DiagramAddShapeEvent>(DiagramAddShapeEventHandler);
+        Bus.UnSubscribe<DiagramRemoveSelectedElementsEvent>
+            (DiagramRemoveSelectedElementsEventHandler);
 
         if (_module is not null)
         {
@@ -89,5 +95,42 @@ public partial class SvgDiagram : IAsyncDisposable
             message.Parameters.Height,
             message.Parameters.ShowGrid,
             message.Parameters.GridStep);
+    }
+
+    private async Task DiagramAddShapeEventHandler(MessageArgs args,
+        CancellationToken ct)
+    {
+        var message = args.GetMessage<DiagramAddShapeEvent>();
+        if (message is null)
+        {
+            return;
+        }
+
+        var addShapeJsFunctionName = message.ShapeType switch
+        {
+            ShapeType.Rectangle => "addSvgDiagramRectangle",
+            ShapeType.Circle => "addSvgDiagramCircle",
+            ShapeType.Line => "addSvgDiagramLine",
+            _ => string.Empty,
+        };
+
+        if (string.IsNullOrWhiteSpace(addShapeJsFunctionName))
+        {
+            return;
+        }
+
+        await _module!.InvokeVoidAsync(addShapeJsFunctionName);
+    }
+
+    private async Task DiagramRemoveSelectedElementsEventHandler(MessageArgs args,
+        CancellationToken ct)
+    {
+        var message = args.GetMessage<DiagramRemoveSelectedElementsEvent>();
+        if (message is null)
+        {
+            return;
+        }
+
+        await _module!.InvokeVoidAsync("removeSvgDiagramSelectedElements");
     }
 }

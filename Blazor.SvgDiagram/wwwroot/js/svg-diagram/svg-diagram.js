@@ -27,3 +27,19 @@ export function createSvgDiagram(svgId, width, height, shouldShowGrid, gridStep)
 export function updateSvgDiagramParameters(width, height, shouldShowGrid, gridStep) {
     svgDiagram.setParameters(width, height, shouldShowGrid, gridStep);
 }
+
+export function addSvgDiagramRectangle() {
+    svgDiagram.shapeGenerator.addRectangle();
+}
+
+export function addSvgDiagramCircle() {
+    svgDiagram.shapeGenerator.addCircle();
+}
+
+export function addSvgDiagramLine() {
+    svgDiagram.shapeGenerator.addLine();
+}
+
+export function removeSvgDiagramSelectedElements() {
+    svgDiagram.removeSelectedElements();
+}

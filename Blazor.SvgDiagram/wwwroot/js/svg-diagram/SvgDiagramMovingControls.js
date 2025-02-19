@@ -4,22 +4,24 @@
     static mouseUpEventName = "mouseup";
     static mouseOutEventName = "mouseout";
 
-    selectionControls;
+    #svg;
 
+    selectionControls;
     mouseX;
     mouseY;
 
-    constructor(selectionControls) {
+    constructor(svg, selectionControls) {
+        this.#svg = svg;
         this.selectionControls = selectionControls;
 
         let controls = this;
 
-        this.selectionControls.svgNode.addEventListener(
+        this.#svg.node.addEventListener(
             SvgDiagramSelectionControls.selectedElementsWillBeChangedEventName,
             (event) => SvgDiagramMovingControls.onSelectedElementsWillBeChanged(controls,
                 event.detail.selectedElements));
 
-        this.selectionControls.svgNode.addEventListener(
+        this.#svg.node.addEventListener(
             SvgDiagramSelectionControls.selectedElementsChangedEventName,
             (event) => SvgDiagramMovingControls.onSelectedElementsChanged(controls,
                 event.detail.selectedElements));

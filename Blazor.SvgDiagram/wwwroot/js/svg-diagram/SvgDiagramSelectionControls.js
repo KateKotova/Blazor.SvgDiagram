@@ -19,10 +19,6 @@
             (event) => SvgDiagramSelectionControls.onSvgClick(event, controls));
     }
 
-    get svgNode() {
-        return this.#svg.node;
-    }
-
     get selectionFrameIsShown() {
         return !!this.#svg.find(`.${SvgDiagramSelectionControls.selectionFrameClassName}`).length;
     }
@@ -59,7 +55,7 @@
                     break;
                 case 'circle':
                     informationLine = `Круг: x=${selectedElement.x()}, y=${selectedElement.y()}, `
-                        + `радиус=${selectedElement.radius()}`;
+                        + `радиус=${selectedElement.rx()}`;
                     break;
                 case 'line':
                     var lineArray = selectedElement.array();
@@ -79,7 +75,7 @@
     }
 
     dispatchSelectedElementsInformationChangedEvent() {
-        this.svgNode.dispatchEvent(
+        this.#svg.node.dispatchEvent(
             new CustomEvent(SvgDiagramSelectionControls.selectedElementsInformationChangedEventName, {
                 detail: {
                     informationLines: this.getSelectedElementsInformationLines()
@@ -89,7 +85,7 @@
     }
 
     dispatchSelectedElementsWillBeChangedEvent() {
-        this.svgNode.dispatchEvent(
+        this.#svg.node.dispatchEvent(
             new CustomEvent(SvgDiagramSelectionControls.selectedElementsWillBeChangedEventName, {
                 detail: {
                     selectedElements: [...this.selectedElements]
@@ -98,7 +94,7 @@
     }
 
     dispatchSelectedElementsChangedEvent() {
-        this.svgNode.dispatchEvent(
+        this.#svg.node.dispatchEvent(
             new CustomEvent(SvgDiagramSelectionControls.selectedElementsChangedEventName, {
                 detail: {
                     selectedElements: this.selectedElements
@@ -146,11 +142,30 @@
             return;
         }
 
-        selectableElements.splice(selectableElementIndex, 1);
+        this.selectableElements.splice(selectableElementIndex, 1);
 
         let controls = this;
         element.off(SvgDiagramSelectionControls.clickEventName,
             (event) => SvgDiagramSelectionControls.onSelectableElementClick(event, controls, element));
+    }
+
+    removeSelectedElements() {
+        if (!this.selectedElements.length) {
+            return;
+        }
+
+        this.removeSelectionFrame();
+
+        for (var elementIndex = this.selectedElements.length - 1;
+            elementIndex >= 0; elementIndex--) {
+
+            var element = this.selectedElements[elementIndex];
+            this.removeSelectableElement(element);
+            this.selectedElements.pop();
+            element.remove();
+        }
+
+        this.dispatchSelectedElementsInformationChangedEvent();
     }
 
     #getSelectedElementsRectangle() {
