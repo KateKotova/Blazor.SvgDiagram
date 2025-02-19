@@ -4,6 +4,7 @@
     --svg-diagram-border-color: #5c5240;
     --svg-diagram-background-color: #d7d5d1;
     --svg-diagram-grid-color: #c0bab0;
+    --svg-diagram-selection-frame-color: #22b3bb;
 }
 
 .svg-diagram-container-wrapper {
@@ -34,4 +35,10 @@
 .svg-diagram-grid-line {
     stroke: var(--svg-diagram-grid-color);
     stroke-width: 1;
+}
+
+.svg-diagram-selection-frame {
+    fill: none;
+    stroke: var(--svg-diagram-selection-frame-color);
+    stroke-width: 2;
 }

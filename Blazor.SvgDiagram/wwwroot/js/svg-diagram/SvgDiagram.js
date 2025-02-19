@@ -1,31 +1,35 @@
 ﻿class SvgDiagram {
+    #svgId;
+    #svg;
+    #grid;
 
-    _svgId;
-    _svg;
-    _grid;
+    #selectionControls;
 
     constructor(svgId, gridStep) {
-        this._svgId = svgId;
-        this._svg = SVG(`#${this._svgId}`);
-        if (!this._svgId) {
+        this.#svgId = svgId;
+        this.#svg = SVG(`#${this.#svgId}`);
+        if (!this.#svgId) {
             return;
         }
 
-        this._grid = new SvgDiagramGrid(this._svg, gridStep);
-        this._draw();
+        this.#grid = new SvgDiagramGrid(this.#svg, gridStep);
+
+        this.#selectionControls = new SvgDiagramSelectionControls(this.#svg);
+
+        var rect1 = this.#svg.rect(100, 100).move(100, 50).fill('#f06');
+        var rect2 = this.#svg.rect(200, 200).move(300, 100).fill('#00f');
+
+        this.#selectionControls.addSelectableElement(rect1);
+        this.#selectionControls.addSelectableElement(rect2);
     }
 
     setParameters(width, height, shouldShowGrid, gridSetp) {
-        if (!this._svgId) {
+        if (!this.#svgId) {
             return;
         }
 
-        this._svg.size(width, height);
-        this._grid.step = gridSetp;
-        this._grid.shouldShow = shouldShowGrid;
-    }
-
-    _draw() {
-        this._svg.rect(100, 100).move(100, 50).fill('#f06');
+        this.#svg.size(width, height);
+        this.#grid.step = gridSetp;
+        this.#grid.shouldShow = shouldShowGrid;
     }
 }

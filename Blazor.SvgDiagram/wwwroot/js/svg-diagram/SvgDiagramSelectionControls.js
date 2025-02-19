@@ -1,0 +1,141 @@
+﻿class SvgDiagramSelectionControls {
+    static selectionFrameClassName = "svg-diagram-selection-frame";
+    static selectionFrameOffset = 4;
+    static clickEventName = "click";
+
+    #svg;
+    #selectionFrame;
+
+    selectableElements = [];
+    selectedElements = [];
+
+    constructor(svg) {
+        this.#svg = svg;
+        let controls = this;
+        this.#svg.on(SvgDiagramSelectionControls.clickEventName,
+            (event) => SvgDiagramSelectionControls.onSvgClick(event, controls));
+    }
+
+    get selectionFrameIsShown() {
+        return !!this.#svg.find(`.${SvgDiagramSelectionControls.selectionFrameClassName}`).length;
+    }
+
+    recreateSelectionFrame() {
+        this.removeSelectionFrame();
+
+        if (!this.selectedElements.length) {
+            return;
+        }
+
+        var rectangle = this.#getSelectedElementsRectangle();
+        this.#selectionFrame = this.#svg.rect(rectangle.width, rectangle.height)
+            .move(rectangle.x, rectangle.y)
+            .addClass(SvgDiagramSelectionControls.selectionFrameClassName);
+    }
+
+    removeSelectionFrame() {
+        if (this.selectionFrameIsShown) {
+            this.#selectionFrame.remove();
+        }
+    }
+
+    addSelectableElement(element) {
+        let elementIsSelectable = this.selectableElements.indexOf(element) >= 0;
+        if (elementIsSelectable) {
+            return;
+        }
+
+        this.selectableElements.push(element);
+
+        let controls = this;
+        element.on(SvgDiagramSelectionControls.clickEventName,
+            (event) => SvgDiagramSelectionControls.onSelectableElementClick(event, controls, element));
+    }
+
+    removeSelectableElement(element) {
+        let selectableElementIndex = this.selectableElements.indexOf(element);
+        let elementIsSelectable = selectableElementIndex >= 0;
+        if (!elementIsSelectable) {
+            return;
+        }
+
+        selectableElements.splice(selectableElementIndex, 1);
+
+        let controls = this;
+        element.off(SvgDiagramSelectionControls.clickEventName,
+            (event) => SvgDiagramSelectionControls.onSelectableElementClick(event, controls, element));
+    }
+
+    #getSelectedElementsRectangle() {
+        let result = new Rectangle();
+        if (!this.selectedElements.length) {
+            return result;
+        }
+
+        result.x = Number.MAX_SAFE_INTEGER;
+        result.y = Number.MAX_SAFE_INTEGER;
+
+        let right = 0;
+        let bottom = 0;
+
+        for (let elementIndex = 0; elementIndex < this.selectedElements.length; elementIndex++) {
+            let element = this.selectedElements[elementIndex];
+
+            let x = element.x();
+            let y = element.y();
+
+            result.x = Math.min(result.x, x);
+            result.y = Math.min(result.y, y);
+
+            right = Math.max(right, x + element.width());
+            bottom = Math.max(bottom, y + element.height());
+        }
+
+        var offset = SvgDiagramSelectionControls.selectionFrameOffset;
+        var doubleOffset = 2 * offset;
+
+        result.width = right - result.x + doubleOffset;
+        result.height = bottom - result.y + doubleOffset;
+
+        result.x -= offset;
+        result.y -= offset;
+
+        return result;
+    }
+
+    static onSelectableElementClick(event, controls, element) {
+        if (event.buttons != 0) {
+            return;
+        }
+
+        event.stopPropagation();
+
+        let selectedElementIndex = controls.selectedElements.indexOf(element);
+        let elementIsSelected = selectedElementIndex >= 0;
+
+        if (!event.ctrlKey) {
+            if (elementIsSelected) {
+                return;
+            }
+            controls.selectedElements.splice(0, controls.selectedElements.length);
+            controls.selectedElements.push(element);
+        } else {
+            if (elementIsSelected) {
+                controls.selectedElements.splice(selectedElementIndex, 1);
+            } else {
+                controls.selectedElements.push(element);
+            }
+        }
+
+        controls.recreateSelectionFrame();
+    }
+
+    static onSvgClick(event, controls) {
+        if (event.buttons != 0 || !controls.selectedElements.length) {
+            return;
+        }
+
+        controls.selectedElements.splice(0, controls.selectedElements.length);
+        controls.recreateSelectionFrame();
+    }
+}

@@ -1,85 +1,84 @@
 ﻿class SvgDiagramGrid {
-
     static className = "grid";
     static gridLineClassName = "svg-diagram-grid-line";
 
-    _svg;
-    _gridGroup;
-    _step;
-    _shouldShow = false;
+    #svg;
+    #gridGroup;
+    #step;
+    #shouldShow = false;
 
     constructor(svg, step = 10) {
-        this._svg = svg;
-        this._step = step;
+        this.#svg = svg;
+        this.#step = step;
     }
 
     get isShown() {
-        return !!this._svg.find(`.${SvgDiagramGrid.className}`).length;
+        return !!this.#svg.find(`.${SvgDiagramGrid.className}`).length;
     }
 
     get shouldShow() {
-        return this._shouldShow;
+        return this.#shouldShow;
     }
 
     set shouldShow(value) {
-        this._shouldShow = value;
+        this.#shouldShow = value;
 
         let isShown = this.isShown;
 
-        if (this._shouldShow) {
+        if (this.#shouldShow) {
             if (!isShown) {
-                this._create();
+                this.#create();
             }
         } else {
             if (isShown) {
-                this._remove();
+                this.#remove();
             }
         }
     }
 
     get step() {
-        return this._step;
+        return this.#step;
     }
 
     set step(value) {
-        this._step = value;
-        this._recreate();
+        this.#step = value;
+        this.#recreate();
     }
 
-    _recreate() {
+    #recreate() {
         if (this.isShown) {
-            this._remove();
+            this.#remove();
         }
 
-        if (this._shouldShow) {
-            this._create();
+        if (this.#shouldShow) {
+            this.#create();
         }
     }
 
-    _create() {
-        this._gridGroup = this._svg.group().addClass(SvgDiagramGrid.className).back();
-        this._draw();
+    #create() {
+        this.#gridGroup = this.#svg.group().addClass(SvgDiagramGrid.className).back();
+        this.#draw();
     }
 
-    _remove() {
-        this._gridGroup.remove();
+    #remove() {
+        this.#gridGroup.remove();
     }
 
-    _draw() {
-        if (!this._gridGroup) {
+    #draw() {
+        if (!this.#gridGroup) {
             return;
         }
 
-        let width = this._svg.width();
-        let height = this._svg.height();
+        let width = this.#svg.width();
+        let height = this.#svg.height();
 
-        for (let verticalLineX = 0; verticalLineX < width; verticalLineX += this._step) {
-            this._gridGroup.line(verticalLineX, 0, verticalLineX, height)
+        for (let verticalLineX = 0; verticalLineX < width; verticalLineX += this.#step) {
+            this.#gridGroup.line(verticalLineX, 0, verticalLineX, height)
                 .addClass(SvgDiagramGrid.gridLineClassName);
         }
 
-        for (let horizontalLineY = 0; horizontalLineY < height; horizontalLineY += this._step) {
-            this._gridGroup.line(0, horizontalLineY, width, horizontalLineY)
+        for (let horizontalLineY = 0; horizontalLineY < height; horizontalLineY += this.#step) {
+            this.#gridGroup.line(0, horizontalLineY, width, horizontalLineY)
                 .addClass(SvgDiagramGrid.gridLineClassName);
         }
     }
